@@ -1,0 +1,52 @@
+name,description,query,id,parentId,isFolder
+Nodes_2025,,,0,,true
+Show Schema,,"// Show Schema
+CALL db.schema.visualization()
+YIELD nodes, relationships
+RETURN nodes, relationships",1,0,false
+Most frequent trips,,"// Most frequent trips
+MATCH (trip:Trip)-[:FROM]->(fromS:Station)
+MATCH (trip)-[:TO]->(toS:Station)
+RETURN fromS.station_name AS fromStation, toS.station_name AS toStation, count(trip) AS nbTrips
+ORDER BY nbTrips DESC LIMIT 10",2,0,false
+Create direct relationships bw Stations,,"// Create direct relationships bw Stations
+MATCH (trip:Trip)-[:FROM]->(fromS:Station)
+MATCH (trip)-[:TO]->(toS:Station)
+WITH fromS, toS, count(trip) AS nbTrips
+MERGE (fromS)-[r:LINKS]->(toS)
+  ON CREATE SET r.nbTrips = nbTrips;",3,0,false
+Aura Credentials,,":params {
+  clientId: ""B71vpI7lVR9TORKKvDKfGxGN0i7svttI"",
+  clientSecret: ""IE7aqOAeK-ZT6S51fiXdvI7qbaLST5WZolfAAJrhNcXnnAb939u8hNe3PYC8W65F""
+}",4,0,false
+Graph projection,,"// Graph projection
+CYPHER runtime=parallel
+OPTIONAL MATCH (source)-[r:LINKS]->(target:Station)
+WITH gds.graph.project('myGraph', source, target, {
+  sourceNodeProperties: source {},
+  targetNodeProperties: target {},
+  relationshipProperties: r { .nbTrips }
+}, {
+  memory: '4GB', ttl: duration({minutes: 30})
+}) AS g
+RETURN g.graphName, g.nodeCount, g.relationshipCount",5,0,false
+List graph projections,,CALL gds.graph.list(),6,0,false
+Unweighted Pagerank,,"// unweighted pagerank
+CALL gds.pageRank.write('myGraph', {
+  maxIterations: 20,
+  dampingFactor: 0.85,
+  writeProperty: 'pagerank'
+})
+YIELD nodePropertiesWritten, ranIterations",7,0,false
+Weighted Pagerank,,"// Weighted pagerank
+CALL gds.pageRank.write('myGraph', {
+  maxIterations: 20,
+  dampingFactor: 0.85,
+  writeProperty: 'weightedPagerank',
+  relationshipWeightProperty: 'nbTrips'
+})
+YIELD nodePropertiesWritten, ranIterations",8,0,false
+Max pagerank Station,,"MATCH (s:Station)
+WITH max (s.pagerank) AS maxPagerank
+MATCH (s:Station) WHERE s.pagerank = maxPagerank
+RETURN s",9,0,false
