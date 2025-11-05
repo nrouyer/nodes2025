@@ -1,0 +1,666 @@
+{
+  "version": "2.4.0-beta.0",
+  "visualisation": {
+    "nodes": [
+      {
+        "id": "n:0",
+        "position": {
+          "x": -71.33333333333333,
+          "y": -10.666666666666666
+        }
+      },
+      {
+        "id": "n:1",
+        "position": {
+          "x": 46.8671875,
+          "y": -115
+        }
+      },
+      {
+        "id": "n:2",
+        "position": {
+          "x": 58.200520833333336,
+          "y": 81
+        }
+      },
+      {
+        "id": "n:3",
+        "position": {
+          "x": -169.4661458333334,
+          "y": 120
+        }
+      }
+    ]
+  },
+  "dataModel": {
+    "version": "2.4.0-beta.0",
+    "graphSchemaRepresentation": {
+      "version": "1.0.0",
+      "graphSchema": {
+        "nodeLabels": [
+          {
+            "$id": "nl:0",
+            "token": "Trip",
+            "properties": [
+              {
+                "$id": "p:0_0",
+                "token": "trip_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_1",
+                "token": "start_time",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_2",
+                "token": "stop_time",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_3",
+                "token": "start_station_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_4",
+                "token": "start_station_name",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_5",
+                "token": "end_station_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_6",
+                "token": "end_station_name",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_7",
+                "token": "user_type",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_8",
+                "token": "bike_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_9",
+                "token": "gender",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_10",
+                "token": "age",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": false
+              },
+              {
+                "$id": "p:0_11",
+                "token": "trip_duration",
+                "type": {
+                  "type": "float"
+                },
+                "nullable": false
+              }
+            ]
+          },
+          {
+            "$id": "nl:1",
+            "token": "Station",
+            "properties": [
+              {
+                "$id": "p:1",
+                "token": "station_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:2",
+                "token": "station_name",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "nl:2",
+            "token": "Station",
+            "properties": [
+              {
+                "$id": "p:3",
+                "token": "station_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:4",
+                "token": "station_name",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "nl:3",
+            "token": "Bike",
+            "properties": [
+              {
+                "$id": "p:5",
+                "token": "bike_id",
+                "type": {
+                  "type": "integer"
+                },
+                "nullable": true
+              }
+            ]
+          }
+        ],
+        "relationshipTypes": [
+          {
+            "$id": "rt:1",
+            "token": "FROM",
+            "properties": []
+          },
+          {
+            "$id": "rt:2",
+            "token": "TO",
+            "properties": []
+          },
+          {
+            "$id": "rt:3",
+            "token": "USES",
+            "properties": []
+          }
+        ],
+        "nodeObjectTypes": [
+          {
+            "$id": "n:0",
+            "labels": [
+              {
+                "$ref": "#nl:0"
+              }
+            ]
+          },
+          {
+            "$id": "n:1",
+            "labels": [
+              {
+                "$ref": "#nl:1"
+              }
+            ]
+          },
+          {
+            "$id": "n:2",
+            "labels": [
+              {
+                "$ref": "#nl:2"
+              }
+            ]
+          },
+          {
+            "$id": "n:3",
+            "labels": [
+              {
+                "$ref": "#nl:3"
+              }
+            ]
+          }
+        ],
+        "relationshipObjectTypes": [
+          {
+            "$id": "r:1",
+            "type": {
+              "$ref": "#rt:1"
+            },
+            "from": {
+              "$ref": "#n:0"
+            },
+            "to": {
+              "$ref": "#n:1"
+            }
+          },
+          {
+            "$id": "r:2",
+            "type": {
+              "$ref": "#rt:2"
+            },
+            "from": {
+              "$ref": "#n:0"
+            },
+            "to": {
+              "$ref": "#n:2"
+            }
+          },
+          {
+            "$id": "r:3",
+            "type": {
+              "$ref": "#rt:3"
+            },
+            "from": {
+              "$ref": "#n:0"
+            },
+            "to": {
+              "$ref": "#n:3"
+            }
+          }
+        ],
+        "constraints": [
+          {
+            "$id": "c:1",
+            "name": "trip_id_Trip_uniq",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:0"
+            },
+            "properties": [
+              {
+                "$ref": "#p:0_0"
+              }
+            ]
+          },
+          {
+            "$id": "c:4",
+            "name": "bike_id_Bike_uniq",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:3"
+            },
+            "properties": [
+              {
+                "$ref": "#p:5"
+              }
+            ]
+          },
+          {
+            "$id": "c:2",
+            "name": "station_id_Station_uniq",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:1"
+            },
+            "properties": [
+              {
+                "$ref": "#p:1"
+              }
+            ]
+          },
+          {
+            "$id": "c:3",
+            "name": "station_id_Station_uniq",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:2"
+            },
+            "properties": [
+              {
+                "$ref": "#p:3"
+              }
+            ]
+          }
+        ],
+        "indexes": []
+      }
+    },
+    "graphSchemaExtensionsRepresentation": {
+      "nodeKeyProperties": [
+        {
+          "node": {
+            "$ref": "#n:0"
+          },
+          "keyProperty": {
+            "$ref": "#p:0_0"
+          }
+        },
+        {
+          "node": {
+            "$ref": "#n:1"
+          },
+          "keyProperty": {
+            "$ref": "#p:1"
+          }
+        },
+        {
+          "node": {
+            "$ref": "#n:2"
+          },
+          "keyProperty": {
+            "$ref": "#p:3"
+          }
+        },
+        {
+          "node": {
+            "$ref": "#n:3"
+          },
+          "keyProperty": {
+            "$ref": "#p:5"
+          }
+        }
+      ]
+    },
+    "graphMappingRepresentation": {
+      "dataSourceSchema": {
+        "type": "local",
+        "tableSchemas": [
+          {
+            "name": "bike_trips_with_id.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "trip_id",
+                "sample": "1",
+                "recommendedType": {
+                  "type": "integer"
+                }
+              },
+              {
+                "name": "start_time",
+                "sample": "2018-05-31 23:59:59",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "stop_time",
+                "sample": "2018-06-01 00:12:57",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "start_station_id",
+                "sample": "312",
+                "recommendedType": {
+                  "type": "integer"
+                }
+              },
+              {
+                "name": "start_station_name",
+                "sample": "Allen St & Stanton St",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "end_station_id",
+                "sample": "460",
+                "recommendedType": {
+                  "type": "integer"
+                }
+              },
+              {
+                "name": "end_station_name",
+                "sample": "S 4 St & Wythe Ave",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "user_type",
+                "sample": "Subscriber",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "bike_id",
+                "sample": "25805",
+                "recommendedType": {
+                  "type": "integer"
+                }
+              },
+              {
+                "name": "gender",
+                "sample": "male",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "age",
+                "sample": "32",
+                "recommendedType": {
+                  "type": "integer"
+                }
+              },
+              {
+                "name": "trip_duration",
+                "sample": "12.97",
+                "recommendedType": {
+                  "type": "float"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "nodeMappings": [
+        {
+          "node": {
+            "$ref": "#n:0"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [
+            {
+              "property": {
+                "$ref": "#p:0_0"
+              },
+              "fieldName": "trip_id"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_1"
+              },
+              "fieldName": "start_time"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_2"
+              },
+              "fieldName": "stop_time"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_3"
+              },
+              "fieldName": "start_station_id"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_4"
+              },
+              "fieldName": "start_station_name"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_5"
+              },
+              "fieldName": "end_station_id"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_6"
+              },
+              "fieldName": "end_station_name"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_7"
+              },
+              "fieldName": "user_type"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_8"
+              },
+              "fieldName": "bike_id"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_9"
+              },
+              "fieldName": "gender"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_10"
+              },
+              "fieldName": "age"
+            },
+            {
+              "property": {
+                "$ref": "#p:0_11"
+              },
+              "fieldName": "trip_duration"
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:1"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "start_station_id",
+              "property": {
+                "$ref": "#p:1"
+              }
+            },
+            {
+              "fieldName": "start_station_name",
+              "property": {
+                "$ref": "#p:2"
+              }
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:2"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "end_station_id",
+              "property": {
+                "$ref": "#p:3"
+              }
+            },
+            {
+              "fieldName": "end_station_name",
+              "property": {
+                "$ref": "#p:4"
+              }
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:3"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "bike_id",
+              "property": {
+                "$ref": "#p:5"
+              }
+            }
+          ]
+        }
+      ],
+      "relationshipMappings": [
+        {
+          "relationship": {
+            "$ref": "#r:1"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [],
+          "fromMapping": {
+            "fieldName": "trip_id"
+          },
+          "toMapping": {
+            "fieldName": "start_station_id"
+          }
+        },
+        {
+          "relationship": {
+            "$ref": "#r:2"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [],
+          "fromMapping": {
+            "fieldName": "trip_id"
+          },
+          "toMapping": {
+            "fieldName": "end_station_id"
+          }
+        },
+        {
+          "relationship": {
+            "$ref": "#r:3"
+          },
+          "tableName": "bike_trips_with_id.csv",
+          "propertyMappings": [],
+          "fromMapping": {
+            "fieldName": "trip_id"
+          },
+          "toMapping": {
+            "fieldName": "bike_id"
+          }
+        }
+      ]
+    },
+    "configurations": {
+      "idsToIgnore": []
+    }
+  }
+}
