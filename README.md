@@ -3,8 +3,8 @@ NODES 2025 DEMO WITH EXPLAINED PAGERANK AND STATE MACHINES
 
 
 <p align="center">
-  <img src="images/pagerank_bloom.jpeg" width="45%" />
-  <img src="images/pagerank_neodash_form.jpeg" width="45%" />
+  <img src="images/pagerank_bloom.jpeg" width="35%" />
+  <img src="images/pagerank_neodash_form.jpeg" width="55%" />
 </p>
 
 
