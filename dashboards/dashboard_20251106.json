@@ -1,0 +1,225 @@
+{
+  "uuid": "5bb38ef2-86bf-47c6-9b43-1b39c836a5a1",
+  "title": "Nodes 2025",
+  "version": "2.4",
+  "settings": {
+    "pagenumber": 1,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {
+      "neodash_station_station_id": 402,
+      "neodash_station_station_id_display": 402,
+      "neodash_iterations_display": 10,
+      "neodash_damping_factor": "0.85",
+      "neodash_damping_factor_display": "0.85",
+      "neodash_dampingfactor_display": "0.85",
+      "neodash_iterations": "",
+      "neodash_dampingfactor": ""
+    },
+    "theme": "light"
+  },
+  "pages": [
+    {
+      "title": "Presentation",
+      "reports": [
+        {
+          "id": "cbafbdb3-72b9-4ab1-8ea8-246866602562",
+          "title": "Concept Overview",
+          "query": "PageRank measures the *importance* of each node based on the structure of incoming links. In a transportation or network graph, it helps identify the most influential or well-connected stations.\n\nThe algorithm iteratively redistributes a numerical rank across nodes according to link structure and a damping factor ( d ).\n\nThe formula for each node ( i ) at iteration ( t+1 ) is:\n\n[\nPR_i^{(t+1)} = (1 - d)/N + d \\times \\left( \\sum_{j \\in In(i)} \\frac{PR_j^{(t)}}{OutDegree(j)} + \\frac{danglingMass}{N} \\right)\n]\n\nWhere:\n\n* ( N ): total number of nodes\n* ( d ): damping factor (typically 0.85)\n* *danglingMass*: total rank from nodes without outgoing links (redistributed evenly)\n\n---\n\n",
+          "width": 13,
+          "height": 3,
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "27be1f24-490b-41d8-8d83-6b5bbb3501d2",
+          "title": "Initialization",
+          "query": "Each station starts with the same rank:\n\n```cypher\nMATCH (s:Station)\nWITH count(s) AS N\nMATCH (s:Station)\nSET s.rank = 1.0 / toFloat(N),\n    s.ranks = [1.0 / toFloat(N)]  // Keep rank history\n```\n\nThis sets up a uniform starting point and initializes a `ranks` array to store per-iteration snapshots.\n",
+          "width": 11,
+          "height": 3,
+          "x": 13,
+          "y": 0,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "e9240456-9bf6-4da2-a485-dc87c9c4a487",
+          "title": "Compute iterations",
+          "query": "For each iteration:\n\n1. **Compute Dangling Mass** — sum of ranks of nodes without outgoing links.\n2. **Distribute Rank Contributions** — each node passes its rank proportionally to its outgoing neighbors.\n3. **Apply Damping** — combine teleportation and redistributed rank.\n4. **Store History** — append previous rank to the history array.\n\nExample Cypher loop:\n\n```cypher\nUNWIND range(1, $iterations) AS iter\nCALL {\n  WITH iter\n  MATCH (s:Station)\n  WITH collect(s) AS S,\n       count(s) AS N,\n       sum(CASE WHEN COUNT { (s)-[:LINKS]->() } = 0 THEN s.rank ELSE 0.0 END) AS danglingMass\n  UNWIND S AS b\n  OPTIONAL MATCH (a:Station)-[:LINKS]->(b)\n  WITH b, N, danglingMass,\n       sum(a.rank / toFloat(COUNT { (a)-[:LINKS]->() })) AS incoming\n  WITH b, N, danglingMass, coalesce(incoming, 0.0) AS incoming, toFloat($d) AS d\n  WITH b,\n       ((1.0 - d) / toFloat(N)) + d * (incoming + (danglingMass / toFloat(N))) AS nextRank\n  SET b.ranks = coalesce(b.ranks, []) + b.rank,\n      b.rank  = nextRank\n  RETURN count(*) AS updated\n}\nRETURN max(iter) AS iterations_done;\n```\n\nThis approach allows visualization or export of PageRank values after each iteration.\n\n",
+          "width": 13,
+          "height": 4,
+          "x": 0,
+          "y": 3,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "6b6f2b1d-102f-4c07-bae8-67578641f706",
+          "title": "Visualize Results",
+          "query": "Once iterations are complete, the ranks can be inspected or visualized.\n\n**Current Rank Snapshot**\n\n```cypher\nMATCH (s:Station)\nRETURN s.name AS station, s.rank AS current_rank\nORDER BY current_rank DESC;\n```\n\n**Historical Ranks per Station**\n\n```cypher\nMATCH (s:Station)\nUNWIND range(0, size(s.ranks)-1) AS iter\nRETURN s.name AS station, iter AS iteration, s.ranks[iter] AS rank\nORDER BY station, iteration;\n```\n\nThis enables animated visualization of rank propagation across iterations.\n\n---\n\n",
+          "width": 11,
+          "height": 4,
+          "x": 13,
+          "y": 3,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "e4c90754-c884-458d-925f-c17b0c8299e5",
+          "title": "Summary",
+          "query": "| Step | Operation      | Description                                  |\n| ---- | -------------- | -------------------------------------------- |\n| 1    | Initialization | Assign uniform ranks                         |\n| 2    | Dangling Mass  | Compute rank of nodes with no out-links      |\n| 3    | Contribution   | Distribute rank via incoming links           |\n| 4    | Damping        | Apply teleport factor and redistribute mass  |\n| 5    | Iteration Loop | Repeat until convergence or fixed iterations |\n| 6    | Visualization  | Inspect or animate rank evolution            |\n\nThis approach provides an interpretable, iterative understanding of PageRank dynamics directly in Neo4j.\n",
+          "width": 24,
+          "height": 4,
+          "x": 0,
+          "y": 7,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        }
+      ]
+    },
+    {
+      "title": "Iterative Pagerank",
+      "reports": [
+        {
+          "id": "a533a429-fbd2-48ef-8583-3cc5daf8ed8b",
+          "title": "Let's start!",
+          "query": "// Initialization\nMATCH (s:Station)\nWITH count(s) AS nbStations\nMATCH (s:Station)\nSET s.rank = 1.0 / nbStations, s.ranks=[1.0 / nbStations], s.expRank = exp(1000*s.rank)\n\n\n",
+          "width": 6,
+          "height": 2,
+          "x": 0,
+          "y": 4,
+          "type": "forms",
+          "selection": {},
+          "settings": {
+            "runButtonText": "Initialize Pagerank"
+          },
+          "schema": []
+        },
+        {
+          "id": "a43faf34-7415-4f1d-94d4-cb6ba508998a",
+          "title": "Network of stations centered around station 402",
+          "query": "MATCH path=(s:Station {station_id: $neodash_station_station_id})\n  ((:Station)-[r:LINKS WHERE r.nbTrips > 150]->(:Station)){1,3}\nRETURN path\n\n\n",
+          "width": 18,
+          "height": 10,
+          "x": 6,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "Station": "station_id"
+          },
+          "settings": {
+            "nodeColorScheme": "accent",
+            "relationshipParticles": false,
+            "refreshButtonEnabled": true,
+            "nodeSizeProp": "expRank",
+            "refreshRate": 0,
+            "showPropertiesOnHover": true,
+            "fullscreenEnabled": true
+          },
+          "schema": [
+            [
+              "Station",
+              "station_name",
+              "expRank",
+              "weightedPagerank",
+              "ranks",
+              "station_id",
+              "rank",
+              "pagerank"
+            ]
+          ]
+        },
+        {
+          "id": "db6d07a0-84d6-4568-858e-758a9421cbb6",
+          "title": "Focus on station",
+          "query": "MATCH (n:`Station`) \nWHERE toLower(toString(n.`station_id`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`station_id` as value,  n.`station_id` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+          "width": 6,
+          "height": 2,
+          "x": 0,
+          "y": 6,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Node Property",
+            "entityType": "Station",
+            "propertyType": "station_id",
+            "propertyTypeDisplay": "station_id",
+            "parameterName": "neodash_station_station_id"
+          },
+          "schema": []
+        },
+        {
+          "id": "dca2f932-8995-4b09-9d8c-20b0ad8be821",
+          "title": "Iterate Pagerank",
+          "query": "// Appends s.rank for each iteration into s.ranks\nUNWIND range(1, $neodash_iterations) AS iter\nCALL {\n  WITH iter\n  MATCH (s:Station)\n  WITH collect(s) AS S,\n       count(s) AS N,\n       sum(CASE WHEN COUNT { (s)-[:LINKS]->() } = 0 THEN s.rank ELSE 0.0 END) AS danglingMass\n  UNWIND S AS b\n  OPTIONAL MATCH (a:Station)-[:LINKS]->(b)\n  WITH b, N, danglingMass,\n       sum(a.rank / toFloat(COUNT { (a)-[:LINKS]->() })) AS incoming\n  WITH b, N, danglingMass, coalesce(incoming, 0.0) AS incoming, toFloat($neodash_dampingfactor) AS d\n  WITH b,\n       ((1.0 - d) / toFloat(N)) + d * (incoming + (danglingMass / toFloat(N))) AS nextRank\n  SET b.ranks = coalesce(b.ranks, []) + b.rank,   // snapshot avant maj\n      b.rank  = nextRank,\n      b.expRank = exp(1000*nextRank)\n  RETURN count(*) AS updated\n}\nRETURN max(iter) AS iterations_done;\n\n\n\n",
+          "width": 6,
+          "height": 4,
+          "x": 0,
+          "y": 10,
+          "type": "forms",
+          "selection": {},
+          "settings": {
+            "formFields": [
+              {
+                "type": "Custom Query",
+                "settings": {
+                  "type": "Custom Query",
+                  "entityType": "iterations",
+                  "parameterName": "neodash_iterations"
+                },
+                "query": "UNWIND range (1, 50) AS iterations RETURN iterations"
+              },
+              {
+                "type": "Custom Query",
+                "settings": {
+                  "type": "Custom Query",
+                  "entityType": "dampingFactor",
+                  "parameterName": "neodash_dampingfactor"
+                },
+                "query": "UNWIND [0.85, 0.90, 0.95] AS dampingFactor RETURN dampingFactor"
+              }
+            ]
+          },
+          "schema": []
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {
+    "active": true,
+    "activeReducers": [
+      "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+    ],
+    "advanced-charts": {
+      "active": true
+    },
+    "styling": {
+      "active": true
+    },
+    "actions": {
+      "active": true
+    },
+    "query-translator": {
+      "active": true
+    },
+    "forms": {
+      "active": true
+    },
+    "access-control-management": {
+      "active": true
+    }
+  }
+}
